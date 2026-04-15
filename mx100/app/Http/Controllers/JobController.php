@@ -9,19 +9,22 @@ class JobController extends Controller
 {
     public function index()
     {
-        // ... kode yang sudah ada ...
+        $jobs = Job::where('status', 'published')->get();
+
+        return response()->json([
+            'message' => 'Berhasil mengambil daftar lowongan pekerjaan',
+            'data' => $jobs
+        ], 200);
     }
 
     public function store(Request $request)
     {
-        // ... kode yang sudah ada ...
+        // (Biarkan isi kodingan store kamu yang asli di sini, jangan dihapus)
     }
 
-    // --- TARUH DI SINI ---
     // Fitur Employer: Melihat siapa saja yang melamar di lowongan miliknya
     public function showApplications(Request $request, $id)
     {
-        // Cari job, pastikan memang milik employer yang sedang login
         $job = $request->user()->jobs()->where('id', $id)->first();
 
         if (!$job) {
@@ -30,7 +33,6 @@ class JobController extends Controller
             ], 403);
         }
 
-        // Ambil data pelamar beserta info user-nya (Freelancer)
         $applications = $job->applications()->with('freelancer:id,name,email')->get();
 
         return response()->json([
